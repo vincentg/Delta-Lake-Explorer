@@ -1,0 +1,10 @@
+﻿{
+    "profiles": {
+      "Delta Lake Explorer (Package)": {
+        "commandName": "MsixPackage"
+      },
+      "Delta Lake Explorer (Unpackaged)": {
+        "commandName": "Project"
+      }
+    }
+}
