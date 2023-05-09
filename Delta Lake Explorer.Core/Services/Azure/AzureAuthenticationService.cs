@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 using Azure.Identity;
 using Delta_Lake_Explorer.Core.Contracts.Services;
 using Delta_Lake_Explorer.Core.Models;
+using Delta_Lake_Explorer.Core.Models.Azure;
 
-namespace Delta_Lake_Explorer.Core.Services;
+namespace Delta_Lake_Explorer.Core.Services.Azure;
 public class AzureAuthenticationService : IAuthenticationService
 {
     private AzureAuthentication _azureAuthentication;
@@ -40,8 +41,11 @@ public class AzureAuthenticationService : IAuthenticationService
     }
     public Task<CloudAuthentication> GetAuthenticationAsync() => Task.FromResult<CloudAuthentication>(_azureAuthentication);
     public Task<bool> IsAuthenticatedAsync() => Task.FromResult(_azureAuthentication.IsAuthenticated);
-    public Task<bool> LogoutAsync() 
+    public Task<bool> LogoutAsync()
     {
         throw new NotImplementedException();
     }
+
+
+
 }

@@ -141,4 +141,19 @@
   <data name="Authentication_LoggedIn" xml:space="preserve">
     <value>Logged In</value>
   </data>
+  <data name="Authentication_ClientId" xml:space="preserve">
+    <value>ClientId</value>
+  </data>
+  <data name="Authentication_NotLoggedIn" xml:space="preserve">
+    <value>Not Logged In</value>
+  </data>
+  <data name="Authentication_SubscriptionSelect" xml:space="preserve">
+    <value>Please select Azure Subscription to be used </value>
+  </data>
+  <data name="Authentication_TenantId" xml:space="preserve">
+    <value>TenantId</value>
+  </data>
+  <data name="Authentication_Username" xml:space="preserve">
+    <value>Username</value>
+  </data>
 </root>

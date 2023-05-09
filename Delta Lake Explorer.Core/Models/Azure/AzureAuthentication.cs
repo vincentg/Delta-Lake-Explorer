@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Azure.Core;
 
-namespace Delta_Lake_Explorer.Core.Models;
+namespace Delta_Lake_Explorer.Core.Models.Azure;
 public record AzureAuthentication : CloudAuthentication
 {
     public string TenantId

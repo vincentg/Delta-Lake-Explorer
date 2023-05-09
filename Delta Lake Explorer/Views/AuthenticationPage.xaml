@@ -3,9 +3,14 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:x1="using:Azure.ResourceManager.Resources"
     mc:Ignorable="d">
-
+    <Page.Resources>
+        <DataTemplate x:Key="SubscriptionListViewTemplate" x:DataType="x1:SubscriptionData">
+            <TextBlock Text="{x:Bind DisplayName}" x:Phase="1" Margin="0,5,0,5"/>
+        </DataTemplate>
+    </Page.Resources>
     <StackPanel HorizontalAlignment="Left">
 
         <Expander x:Name="Expander" >
@@ -13,10 +18,23 @@
                 <ToggleButton x:Name="loginButton" Command="{x:Bind ViewModel.LoginCommand}" Content ="{x:Bind ViewModel.ButtonText, Mode=OneWay}"/>
             </Expander.Header>
             <Expander.Content>
-                <Grid>
-                    <TextBlock Margin="15" Text="Not logged in"/>
-                </Grid>
+                <StackPanel HorizontalAlignment="Left">
+                    <TextBlock Margin="15" Text="{x:Bind ViewModel.LabelText, Mode=OneWay}"/>
+
+                    <ListView
+    x:Name="SubscriptionList"
+    ItemTemplate="{StaticResource SubscriptionListViewTemplate}"
+    ItemsSource="{x:Bind ViewModel.SubscriptionList, Mode=OneWay}"
+    BorderThickness="1"
+    BorderBrush="{ThemeResource SystemControlForegroundBaseMediumLowBrush}"
+    Width="350"
+    Height="400"
+    HorizontalAlignment="Left"/>
+                    <!-- In this example, the ListView's ItemTemplate property is bound to a data template (shown below)
+called ContactListViewTemplate, defined in a Page.Resources section. -->
+                </StackPanel>
             </Expander.Content>
         </Expander>
+       
     </StackPanel>
 </Page>
