@@ -6,7 +6,17 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Grid x:Name="ContentArea">
-        
-    </Grid>
+    <StackPanel HorizontalAlignment="Left">
+
+        <Expander x:Name="Expander" >
+            <Expander.Header>
+                <ToggleButton x:Name="loginButton" Command="{x:Bind ViewModel.LoginCommand}" Content ="{x:Bind ViewModel.ButtonText, Mode=OneWay}"/>
+            </Expander.Header>
+            <Expander.Content>
+                <Grid>
+                    <TextBlock Margin="15" Text="Not logged in"/>
+                </Grid>
+            </Expander.Content>
+        </Expander>
+    </StackPanel>
 </Page>

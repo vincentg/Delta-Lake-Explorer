@@ -65,6 +65,7 @@ public partial class App : Application
             // Core Services
             services.AddSingleton<ISampleDataService, SampleDataService>();
             services.AddSingleton<IFileService, FileService>();
+            services.AddSingleton<IAuthenticationService, AzureAuthenticationService>();
 
             // Views and ViewModels
             services.AddTransient<DataViewModel>();
