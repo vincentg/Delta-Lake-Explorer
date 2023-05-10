@@ -62,7 +62,7 @@ public class AuthenticationViewModel : ObservableRecipient
 
     public void FilterChanged(object sender, TextChangedEventArgs args)
     {
-        var text = ((TextBox)sender).Text;
+        var text = ((TextBox)sender).Text.ToLower();
         
         if (text == "")
         {
@@ -71,7 +71,7 @@ public class AuthenticationViewModel : ObservableRecipient
         else
         {
             SubscriptionList = new ObservableCollection<SubscriptionData>(
-                _fullSubscriptionList.Where(i => i.DisplayName.Contains(text) || i.SubscriptionId.Contains(text)));
+                _fullSubscriptionList.Where(i => i.DisplayName.ToLower().Contains(text) || i.SubscriptionId.ToLower().Contains(text)));
         }
     }
 
@@ -84,7 +84,7 @@ public class AuthenticationViewModel : ObservableRecipient
            }
            else
            {
-               _azureAuthentication = (AzureAuthentication)await _authenticationService.AuthenticateAsync();
+               _azureAuthentication = (AzureAuthentication) await _authenticationService.AuthenticateAsync();
                IsAuthenticated = _azureAuthentication.IsAuthenticated;
                ButtonText = "Authentication_LoggedIn".GetLocalized();
                LabelText = generateLabelText();
