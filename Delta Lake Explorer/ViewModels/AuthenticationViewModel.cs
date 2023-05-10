@@ -8,6 +8,7 @@ using Delta_Lake_Explorer.Core.Contracts.Services.Azure;
 using Delta_Lake_Explorer.Core.Models.Azure;
 using Delta_Lake_Explorer.Core.Services.Azure;
 using Delta_Lake_Explorer.Helpers;
+using Microsoft.UI.Xaml.Controls;
 
 namespace Delta_Lake_Explorer.ViewModels;
 
@@ -20,6 +21,8 @@ public class AuthenticationViewModel : ObservableRecipient
     private string? _buttonText;
     private string? _labelText;
     private ObservableCollection<SubscriptionData> _subscriptionList;
+    private ObservableCollection<SubscriptionData> _fullSubscriptionList;
+
 
     public AuthenticationViewModel(IAuthenticationService authenticationService, IARMService armService)
     {
@@ -29,7 +32,8 @@ public class AuthenticationViewModel : ObservableRecipient
         _isAuthenticated = _azureAuthentication.IsAuthenticated;
         _buttonText = (bool)_isAuthenticated ? "Authentication_LoggedIn".GetLocalized() : "Authentication_ClickToLogin".GetLocalized();
         _labelText = generateLabelText();
-        _subscriptionList = new ObservableCollection<SubscriptionData>(armService.GetSubscriptionsAsync().Result.Select(i => i.Data));
+        _subscriptionList = new ObservableCollection<SubscriptionData>(armService.GetSubscriptionsAsync().Result.Select(i => i.Data).OrderBy(i => i.DisplayName));
+        _fullSubscriptionList = _subscriptionList;
     }
     public bool? IsAuthenticated
     {
@@ -44,10 +48,10 @@ public class AuthenticationViewModel : ObservableRecipient
     }
     public ObservableCollection<SubscriptionData> SubscriptionList
     {
-    
-           get => _subscriptionList;
-           set => SetProperty(ref _subscriptionList, value);
-       }
+
+        get => _subscriptionList;
+        set => SetProperty(ref _subscriptionList, value);
+    }
 
     public string LabelText
     {
@@ -56,7 +60,20 @@ public class AuthenticationViewModel : ObservableRecipient
         set => SetProperty(ref _labelText, value);
     }
 
-    
+    public void FilterChanged(object sender, TextChangedEventArgs args)
+    {
+        var text = ((TextBox)sender).Text;
+        
+        if (text == "")
+        {
+            SubscriptionList = _fullSubscriptionList;
+        }
+        else
+        {
+            SubscriptionList = new ObservableCollection<SubscriptionData>(
+                _fullSubscriptionList.Where(i => i.DisplayName.Contains(text) || i.SubscriptionId.Contains(text)));
+        }
+    }
 
     public ICommand LoginCommand => new RelayCommand(async () =>
        {
@@ -67,12 +84,13 @@ public class AuthenticationViewModel : ObservableRecipient
            }
            else
            {
-               _azureAuthentication = (AzureAuthentication) await _authenticationService.AuthenticateAsync();
+               _azureAuthentication = (AzureAuthentication)await _authenticationService.AuthenticateAsync();
                IsAuthenticated = _azureAuthentication.IsAuthenticated;
                ButtonText = "Authentication_LoggedIn".GetLocalized();
                LabelText = generateLabelText();
                SubscriptionList = new ObservableCollection<SubscriptionData>(
-                   (await _armService.GetSubscriptionsAsync()).Select(i => i.Data));
+                   (await _armService.GetSubscriptionsAsync()).Select(i => i.Data).OrderBy(i => i.DisplayName));
+               _fullSubscriptionList = _subscriptionList;
            }
        });
 
@@ -87,7 +105,6 @@ public class AuthenticationViewModel : ObservableRecipient
         }
         else
         {
-
             return "Authentication_NotLoggedIn".GetLocalized();
         }
     }
