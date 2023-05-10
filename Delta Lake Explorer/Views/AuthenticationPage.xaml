@@ -3,10 +3,74 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:x1="using:Azure.ResourceManager.Resources"
     mc:Ignorable="d">
+    <Page.Resources>
+        <DataTemplate x:Key="SubscriptionListViewTemplate" x:DataType="x1:SubscriptionData">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <FontIcon
+                    Grid.RowSpan="2"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    FontSize="32"
+                    Glyph="&#xE974;"> </FontIcon>
+               
+                <TextBlock Grid.Column="1"
+                    Text="{x:Bind DisplayName}"
+                    x:Phase="1"
+                    Style="{ThemeResource BaseTextBlockStyle}"
+                    Margin="12,6,0,0"/>
+                <TextBlock  Grid.Column="1"
+                    Grid.Row="1"
+                    Text="{x:Bind SubscriptionId}"
+                    x:Phase="2"
+                    Style="{ThemeResource BodyTextBlockStyle}"
+                    Margin="12,0,0,6"/>
+            </Grid>
+        </DataTemplate>
+    </Page.Resources>
+    <StackPanel HorizontalAlignment="Left">
 
-    <Grid x:Name="ContentArea">
-        
-    </Grid>
+        <Expander x:Name="Expander" >
+            <Expander.Header>
+                <ToggleButton x:Name="loginButton" Command="{x:Bind ViewModel.LoginCommand}" Content ="{x:Bind ViewModel.ButtonText, Mode=OneWay}"/>
+            </Expander.Header>
+            <Expander.Content>
+                <StackPanel HorizontalAlignment="Left">
+                    <TextBlock Margin="15" Text="{x:Bind ViewModel.LabelText, Mode=OneWay}"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Margin="8,8,8,8" Style="{ThemeResource BaseTextBlockStyle}">Filter:</TextBlock>
+                        <TextBox Grid.Column="1" x:Name="FilterByFirstName" Width="300" Margin="8"
+	     HorizontalAlignment="Left" TextChanged="{x:Bind ViewModel.FilterChanged}"/>
+                    </Grid>
+
+                    <ListView
+    x:Name="SubscriptionList"
+    ItemTemplate="{StaticResource SubscriptionListViewTemplate}"
+    ItemsSource="{x:Bind ViewModel.SubscriptionList, Mode=OneWay}"
+    BorderThickness="1"
+    BorderBrush="{ThemeResource SystemControlForegroundBaseMediumLowBrush}"
+    Width="500"
+    Height="500"
+    HorizontalAlignment="Left"/>
+                    <!-- In this example, the ListView's ItemTemplate property is bound to a data template (shown below)
+called ContactListViewTemplate, defined in a Page.Resources section. -->
+                </StackPanel>
+            </Expander.Content>
+        </Expander>
+       
+    </StackPanel>
 </Page>

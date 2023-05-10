@@ -1,7 +1,9 @@
 ﻿using Delta_Lake_Explorer.Activation;
 using Delta_Lake_Explorer.Contracts.Services;
 using Delta_Lake_Explorer.Core.Contracts.Services;
+using Delta_Lake_Explorer.Core.Contracts.Services.Azure;
 using Delta_Lake_Explorer.Core.Services;
+using Delta_Lake_Explorer.Core.Services.Azure;
 using Delta_Lake_Explorer.Helpers;
 using Delta_Lake_Explorer.Models;
 using Delta_Lake_Explorer.Services;
@@ -65,6 +67,9 @@ public partial class App : Application
             // Core Services
             services.AddSingleton<ISampleDataService, SampleDataService>();
             services.AddSingleton<IFileService, FileService>();
+            services.AddSingleton<IAuthenticationService, AzureAuthenticationService>();
+            services.AddSingleton<IARMService, ARMService>();
+
 
             // Views and ViewModels
             services.AddTransient<DataViewModel>();

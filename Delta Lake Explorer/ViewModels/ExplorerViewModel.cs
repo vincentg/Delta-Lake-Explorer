@@ -45,9 +45,6 @@ public class ExplorerViewModel : ObservableRecipient, INavigationAware
 
     public void EnsureItemSelected()
     {
-        if (Selected == null)
-        {
-            Selected = SampleItems.First();
-        }
+        Selected ??= SampleItems.First();
     }
 }
