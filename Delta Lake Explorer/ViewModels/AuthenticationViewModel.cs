@@ -22,6 +22,9 @@ public class AuthenticationViewModel : ObservableRecipient
     private string? _labelText;
     private ObservableCollection<SubscriptionData> _subscriptionList;
     private ObservableCollection<SubscriptionData> _fullSubscriptionList;
+    // TODO, the Service can likely maintain that map between Id and SubscriptionResouce
+    // and have the Set DefaultSubscription accept the ID?
+    private Dictionary<string, SubscriptionResource> _subscriptionsDictionnary;
 
 
     public AuthenticationViewModel(IAuthenticationService authenticationService, IARMService armService)
@@ -32,8 +35,8 @@ public class AuthenticationViewModel : ObservableRecipient
         _isAuthenticated = _azureAuthentication.IsAuthenticated;
         _buttonText = (bool)_isAuthenticated ? "Authentication_LoggedIn".GetLocalized() : "Authentication_ClickToLogin".GetLocalized();
         _labelText = generateLabelText();
-        _subscriptionList = new ObservableCollection<SubscriptionData>(armService.GetSubscriptionsAsync().Result.Select(i => i.Data).OrderBy(i => i.DisplayName));
-        _fullSubscriptionList = _subscriptionList;
+        refreshSubscriptions();
+
     }
     public bool? IsAuthenticated
     {
@@ -88,11 +91,24 @@ public class AuthenticationViewModel : ObservableRecipient
                IsAuthenticated = _azureAuthentication.IsAuthenticated;
                ButtonText = "Authentication_LoggedIn".GetLocalized();
                LabelText = generateLabelText();
-               SubscriptionList = new ObservableCollection<SubscriptionData>(
-                   (await _armService.GetSubscriptionsAsync()).Select(i => i.Data).OrderBy(i => i.DisplayName));
-               _fullSubscriptionList = _subscriptionList;
+               refreshSubscriptions();
            }
        });
+
+    public void SubscriptionSelected(object sender, SelectionChangedEventArgs args)
+    {
+        var subscription = (SubscriptionData)args.AddedItems[0];
+
+        _armService.SetDefaultSubscriptionAsync(_subscriptionsDictionnary[subscription.SubscriptionId]);
+    }
+
+    private void refreshSubscriptions()
+    {
+        var subscriptions = _armService.GetSubscriptionsAsync().Result;
+        SubscriptionList = new ObservableCollection<SubscriptionData>(subscriptions.Select(i => i.Data).OrderBy(i => i.DisplayName));
+        _fullSubscriptionList = _subscriptionList;
+        _subscriptionsDictionnary = subscriptions.ToDictionary(i => i.Data.SubscriptionId, i => i);
+    }
 
     private string generateLabelText()
     {

@@ -65,6 +65,7 @@
     BorderBrush="{ThemeResource SystemControlForegroundBaseMediumLowBrush}"
     Width="500"
     Height="500"
+    SelectionChanged="{x:Bind ViewModel.SubscriptionSelected}"
     HorizontalAlignment="Left"/>
                     <!-- In this example, the ListView's ItemTemplate property is bound to a data template (shown below)
 called ContactListViewTemplate, defined in a Page.Resources section. -->
