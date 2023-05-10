@@ -52,7 +52,7 @@
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Margin="8,8,8,8" Style="{ThemeResource BaseTextBlockStyle}">Filter:</TextBlock>
+                        <TextBlock Margin="8,13,8,8" Style="{ThemeResource BaseTextBlockStyle}">Filter:</TextBlock>
                         <TextBox Grid.Column="1" x:Name="FilterByFirstName" Width="300" Margin="8"
 	     HorizontalAlignment="Left" TextChanged="{x:Bind ViewModel.FilterChanged}"/>
                     </Grid>
@@ -65,6 +65,7 @@
     BorderBrush="{ThemeResource SystemControlForegroundBaseMediumLowBrush}"
     Width="500"
     Height="500"
+    SelectionChanged="{x:Bind ViewModel.SubscriptionSelected}"
     HorizontalAlignment="Left"/>
                     <!-- In this example, the ListView's ItemTemplate property is bound to a data template (shown below)
 called ContactListViewTemplate, defined in a Page.Resources section. -->

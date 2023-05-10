@@ -56,9 +56,9 @@ public class ARMService : IARMService
     public Task<BlobContainerCollection> GetStorageContainersAsync(StorageAccountResource storageAccount) => throw new NotImplementedException();
     public Task<IEnumerable<string>> GetStorageFileContentAsync(string subscriptionId, string resourceGroup, string storageAccount, string storageContainer, string storageFile) => throw new NotImplementedException();
     public Task<IEnumerable<string>> GetStorageFilesAsync(string subscriptionId, string resourceGroup, string storageAccount, string storageContainer) => throw new NotImplementedException();
-    public Task SetDefaultSubscriptionAsync(SubscriptionResource subscriptionId)
+    public Task SetDefaultSubscriptionAsync(SubscriptionResource subscription)
     {
-        _defaultSubscription = subscriptionId;
+        _defaultSubscription = subscription;
         return Task.CompletedTask;
     }
     public Task<IEnumerable<SubscriptionResource>> GetSubscriptionsAsync()
