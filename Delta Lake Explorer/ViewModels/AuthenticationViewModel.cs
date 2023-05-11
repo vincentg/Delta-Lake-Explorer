@@ -99,6 +99,13 @@ public class AuthenticationViewModel : ObservableRecipient
            }
        });
 
+    public ICommand ReloadSubscriptionCommand => new RelayCommand(() =>
+    {
+        _userEnvironmentData.subscriptions = null;
+        refreshSubscriptions();
+    });
+
+
     public void SubscriptionSelected(object sender, SelectionChangedEventArgs args)
     {
         var subscription = (SubscriptionData)args.AddedItems[0];
