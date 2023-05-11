@@ -2,9 +2,7 @@
 using Azure.ResourceManager.Resources;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Delta_Lake_Explorer.Contracts.ViewModels;
-using Delta_Lake_Explorer.Core.Contracts.Services;
 using Delta_Lake_Explorer.Core.Contracts.Services.Azure;
-using Delta_Lake_Explorer.Core.Models;
 using Delta_Lake_Explorer.Helpers;
 
 namespace Delta_Lake_Explorer.ViewModels;
@@ -12,14 +10,18 @@ namespace Delta_Lake_Explorer.ViewModels;
 public class ExplorerViewModel : ObservableRecipient, INavigationAware
 {
     private readonly IARMService _armService;
-    private SampleOrder? _selected;
+    private ResourceGroupResource? _selected;
     private string? _activeSubscriptionText;
 
 
-    public SampleOrder? Selected
+    public ResourceGroupResource? Selected
     {
         get => _selected;
-        set => SetProperty(ref _selected, value);
+        set
+        {
+            SetProperty(ref _selected, value);
+            _armService.SetDefaultResourceGroup(value);
+        }
     }
 
     public string ActiveSubscriptionText

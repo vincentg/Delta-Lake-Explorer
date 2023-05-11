@@ -1,6 +1,5 @@
 ﻿using Azure.ResourceManager.Resources;
-using Delta_Lake_Explorer.Core.Models;
-
+using Delta_Lake_Explorer.ViewModels;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
@@ -8,6 +7,10 @@ namespace Delta_Lake_Explorer.Views;
 
 public sealed partial class ExplorerDetailControl : UserControl
 {
+    public ExplorerDetailViewModel ViewModel
+    {
+        get;
+    }
     public ResourceGroupResource? ListDetailsMenuItem
     {
         get => GetValue(ListDetailsMenuItemProperty) as ResourceGroupResource;
@@ -18,6 +21,7 @@ public sealed partial class ExplorerDetailControl : UserControl
 
     public ExplorerDetailControl()
     {
+        ViewModel = App.GetService<ExplorerDetailViewModel>();
         InitializeComponent();
     }
 

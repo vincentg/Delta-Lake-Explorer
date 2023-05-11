@@ -9,6 +9,7 @@
     xmlns:views="using:Delta_Lake_Explorer.Views"
     xmlns:behaviors="using:Delta_Lake_Explorer.Behaviors"
     xmlns:az="using:Azure.ResourceManager.Resources"
+    xmlns:az2="using:Azure.ResourceManager.Storage"
 
     behaviors:NavigationViewHeaderBehavior.HeaderMode="Never"
     mc:Ignorable="d">
@@ -113,7 +114,9 @@
             SelectedItem="{x:Bind ViewModel.Selected, Mode=TwoWay}"
             Height="700"
             ViewStateChanged="OnViewStateChanged"/>
-    </StackPanel>
+            <!-- TODO Hardcoding Height 700 is a Hack to make Scrollbar appears, tofix -->
+
+        </StackPanel>
     </Grid>
 
 </Page>

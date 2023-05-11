@@ -19,8 +19,11 @@ public interface IARMService
     Task<SubscriptionResource> GetDefaultSubscriptionAsync();
     //Set Default Subscription
     Task SetDefaultSubscriptionAsync(SubscriptionResource subscription);
+
+    void SetDefaultResourceGroup(ResourceGroupResource resourceGroup);
+
     Task<IEnumerable<ResourceGroupResource>> GetResourceGroupsAsync();
-    Task<IEnumerable<StorageAccountResource>> GetStorageAccountsAsync(ResourceGroupResource resourceGroup);
+    Task<IEnumerable<StorageAccountResource>> GetStorageAccountsAsync();
     Task<BlobContainerCollection> GetStorageContainersAsync(StorageAccountResource storageAccount);
     Task<IEnumerable<string>> GetStorageFilesAsync(string subscriptionId, string resourceGroup, string storageAccount, string storageContainer);
     Task<IEnumerable<string>> GetStorageFileContentAsync(string subscriptionId, string resourceGroup, string storageAccount, string storageContainer, string storageFile);

@@ -76,6 +76,7 @@ public partial class App : Application
             services.AddTransient<DataPage>();
             services.AddTransient<ExplorerViewModel>();
             services.AddTransient<ExplorerPage>();
+            services.AddTransient<ExplorerDetailViewModel>();
             services.AddTransient<AuthenticationViewModel>();
             services.AddTransient<AuthenticationPage>();
             services.AddTransient<ShellPage>();
