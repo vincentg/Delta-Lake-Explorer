@@ -40,18 +40,32 @@ public class ARMService : IARMService
         {
             return Task.FromResult(_defaultSubscription);
         }
-        if (GetArmClientAsync() is not null)
+        if (GetArmClientAsync().Result is not null)
         {
              _defaultSubscription = _armClient.GetDefaultSubscription();
             return Task.FromResult(_defaultSubscription);
         }
-        return null;
+        return Task.FromResult<SubscriptionResource>(null);
     }
 
-    public Task<IEnumerable<string>> GetResourceGroupsAsync(string subscriptionId) => throw new NotImplementedException();
-    public Task<IEnumerable<ResourceGroupResource>> GetResourceGroupsAsync() => throw new NotImplementedException();
-    public Task<IEnumerable<string>> GetStorageAccountsAsync(string subscriptionId, string resourceGroup) => throw new NotImplementedException();
-    public Task<StorageAccountCollection> GetStorageAccountsAsync(ResourceGroupResource resourceGroup) => throw new NotImplementedException();
+    public Task<IEnumerable<ResourceGroupResource>> GetResourceGroupsAsync()
+    {
+        var subscription = GetDefaultSubscriptionAsync().Result;
+        if (subscription is not null)
+        {
+            return Task.FromResult<IEnumerable<ResourceGroupResource>>(subscription.GetResourceGroups());
+        }
+        return Task.FromResult(Enumerable.Empty<ResourceGroupResource>());
+    }
+    public Task<IEnumerable<StorageAccountResource>> GetStorageAccountsAsync(ResourceGroupResource resourceGroup)
+    {
+
+        StorageAccountCollection accountCollection = resourceGroup.GetStorageAccounts();
+        // Only Return HNS Enabled Storage Accounts
+        return Task.FromResult(accountCollection.Where(sa => (bool)sa.Data.IsHnsEnabled));
+
+
+    }
     public Task<IEnumerable<string>> GetStorageContainersAsync(string subscriptionId, string resourceGroup, string storageAccount) => throw new NotImplementedException();
     public Task<BlobContainerCollection> GetStorageContainersAsync(StorageAccountResource storageAccount) => throw new NotImplementedException();
     public Task<IEnumerable<string>> GetStorageFileContentAsync(string subscriptionId, string resourceGroup, string storageAccount, string storageContainer, string storageFile) => throw new NotImplementedException();

@@ -26,6 +26,7 @@ public class AzureAuthenticationService : IAuthenticationService
         opt.DisableAutomaticAuthentication = true;
 
         var credential = new InteractiveBrowserCredential(opt);
+        // TODO Manage Exception and Cancelled auth, maybe use a Dialog popup
         var authrecord = await credential.AuthenticateAsync();
 
         _azureAuthentication = new AzureAuthentication
