@@ -1,4 +1,5 @@
-﻿using Delta_Lake_Explorer.Core.Models;
+﻿using Azure.ResourceManager.Resources;
+using Delta_Lake_Explorer.Core.Models;
 
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -7,13 +8,13 @@ namespace Delta_Lake_Explorer.Views;
 
 public sealed partial class ExplorerDetailControl : UserControl
 {
-    public SampleOrder? ListDetailsMenuItem
+    public ResourceGroupResource? ListDetailsMenuItem
     {
-        get => GetValue(ListDetailsMenuItemProperty) as SampleOrder;
+        get => GetValue(ListDetailsMenuItemProperty) as ResourceGroupResource;
         set => SetValue(ListDetailsMenuItemProperty, value);
     }
 
-    public static readonly DependencyProperty ListDetailsMenuItemProperty = DependencyProperty.Register("ListDetailsMenuItem", typeof(SampleOrder), typeof(ExplorerDetailControl), new PropertyMetadata(null, OnListDetailsMenuItemPropertyChanged));
+    public static readonly DependencyProperty ListDetailsMenuItemProperty = DependencyProperty.Register("ListDetailsMenuItem", typeof(ResourceGroupResource), typeof(ExplorerDetailControl), new PropertyMetadata(null, OnListDetailsMenuItemPropertyChanged));
 
     public ExplorerDetailControl()
     {

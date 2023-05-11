@@ -28,7 +28,6 @@ public class ExplorerViewModel : ObservableRecipient, INavigationAware
         set => SetProperty(ref _activeSubscriptionText, value);
     }
 
-    public ObservableCollection<SampleOrder> SampleItems { get; private set; } = new ObservableCollection<SampleOrder>();
     public ObservableCollection<ResourceGroupResource> ResourceGroups { get; private set; } = new ObservableCollection<ResourceGroupResource>();
 
     public ExplorerViewModel(IARMService armService)
@@ -38,7 +37,6 @@ public class ExplorerViewModel : ObservableRecipient, INavigationAware
 
     public async void OnNavigatedTo(object parameter)
     {
-        SampleItems.Clear();
         setSubscriptionText();
         ResourceGroups = new ObservableCollection<ResourceGroupResource>(
             (await _armService.GetResourceGroupsAsync())
