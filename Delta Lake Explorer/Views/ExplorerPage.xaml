@@ -14,7 +14,7 @@
     behaviors:NavigationViewHeaderBehavior.HeaderMode="Never"
     mc:Ignorable="d">
     <Page.Resources>
-        <DataTemplate x:Key="ItemTemplate" x:DataType="az:ResourceGroupResource">
+        <DataTemplate x:Key="RGTemplate" x:DataType="az:ResourceGroupResource">
             <Grid Height="20">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
@@ -30,61 +30,38 @@
                     Margin="{StaticResource SmallLeftMargin}"
                     VerticalAlignment="Center">
                     <TextBlock Text="{x:Bind Data.Name}" Style="{StaticResource ListTitleStyle}" />
+                    
                 </StackPanel>
             </Grid>
         </DataTemplate>
 
-        <DataTemplate x:Key="DetailsTemplate">
-            <Grid>
-                <views:ExplorerDetailControl ListDetailsMenuItem="{Binding}" />
+        <DataTemplate x:Key="StorageAccountTemplate" x:DataType="az2:StorageAccountResource">
+            <Grid Height="80">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <FontIcon
+                    Grid.Column="0"
+                    VerticalAlignment="Center"
+                    FontSize="32"
+                    Glyph="&#xED25;" />
+                <StackPanel
+                    Grid.Column="1"
+                    Margin="{StaticResource SmallLeftMargin}"
+                    VerticalAlignment="Center">
+                    <TextBlock Text="{x:Bind Data.Name}" Style="{StaticResource ListTitleStyle}" />
+                    <TextBlock Text="{Binding Data.Location}" Style="{StaticResource BodyTextStyle}"  TextWrapping="NoWrap"/>
+                    <TextBlock Text="{Binding Data.Kind}" Style="{StaticResource BodyTextStyle}" MaxHeight="60"/>
+                </StackPanel>
             </Grid>
         </DataTemplate>
 
-        <DataTemplate x:Key="NoSelectionContentTemplate">
-            <Grid>
-                <TextBlock
-                    x:Uid="Explorer_NoSelection"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    TextAlignment="Center"
-                    Style="{ThemeResource SubtitleTextBlockStyle}" />
-            </Grid>
-        </DataTemplate>
 
-        <DataTemplate x:Key="ListHeaderTemplate">
-            <Grid Height="40">
-                <TextBlock
-                    VerticalAlignment="Center"
-                    Style="{StaticResource ListTitleStyle}"
-                    Text="{Binding}" />
-            </Grid>
-        </DataTemplate>
-        <DataTemplate x:Key="MinimalListHeaderTemplate">
-            <Grid Height="40">
-                <TextBlock
-                    Margin="96,0,0,0"
-                    VerticalAlignment="Center"
-                    Style="{StaticResource ListTitleStyle}"
-                    Text="{Binding}" />
-            </Grid>
-        </DataTemplate>
 
     </Page.Resources>
 
     <Grid x:Name="ContentArea">
-        <VisualStateManager.VisualStateGroups>
-            <VisualStateGroup>
-                <VisualState>
-                    <VisualState.StateTriggers>
-                        <!--641 is the default CompactModeThresholdWidth in NavigationView -->
-                        <AdaptiveTrigger MinWindowWidth="641" />
-                    </VisualState.StateTriggers>
-                    <VisualState.Setters>
-                        <Setter Target="ListDetailsViewControl.ListHeaderTemplate" Value="{StaticResource ListHeaderTemplate}" />
-                    </VisualState.Setters>
-                </VisualState>
-            </VisualStateGroup>
-        </VisualStateManager.VisualStateGroups>
         <StackPanel>
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -98,23 +75,33 @@
                     Text="{x:Bind ViewModel.ActiveSubscriptionText, Mode=OneWay}" />
 
             </Grid>
-            
-            <controls:ListDetailsView
-            x:Uid="Explorer"
-            x:Name="ListDetailsViewControl"
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="400" />
+                    <ColumnDefinition Width="300" />
+                </Grid.ColumnDefinitions>
+                <ListView
+            Grid.Column="0"
+            x:Name="RGList"
             HorizontalAlignment="Left"
-            BackButtonBehavior="Manual"
             Background="Transparent"
             BorderBrush="Transparent"
-            DetailsTemplate="{StaticResource DetailsTemplate}"
             ItemsSource="{x:Bind ViewModel.ResourceGroups}"
-            ItemTemplate="{StaticResource ItemTemplate}"
-            ListHeaderTemplate="{StaticResource MinimalListHeaderTemplate}"
-            NoSelectionContentTemplate="{StaticResource NoSelectionContentTemplate}"
+            ItemTemplate="{StaticResource RGTemplate}"
             SelectedItem="{x:Bind ViewModel.Selected, Mode=TwoWay}"
             Height="700"
-            ViewStateChanged="OnViewStateChanged"/>
-            <!-- TODO Hardcoding Height 700 is a Hack to make Scrollbar appears, tofix -->
+            />
+                <ListView
+            Grid.Column="1"
+            x:Name="StorageAccountList"
+            HorizontalAlignment="Left"
+            Background="Transparent"
+            BorderBrush="Transparent"
+            ItemsSource="{x:Bind ViewModel.StorageAccounts, Mode=OneWay}"
+            ItemTemplate="{StaticResource StorageAccountTemplate}"
+            Height="700"
+            />
+            </Grid>
 
         </StackPanel>
     </Grid>

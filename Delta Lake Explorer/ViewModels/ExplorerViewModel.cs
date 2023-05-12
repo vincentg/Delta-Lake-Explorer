@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using Azure.ResourceManager.Resources;
+using Azure.ResourceManager.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Delta_Lake_Explorer.Contracts.ViewModels;
 using Delta_Lake_Explorer.Core.Contracts.Services.Azure;
@@ -12,7 +13,14 @@ public class ExplorerViewModel : ObservableRecipient, INavigationAware
     private readonly IARMService _armService;
     private ResourceGroupResource? _selected;
     private string? _activeSubscriptionText;
+    private ObservableCollection<StorageAccountResource> _storageAccounts = new();
+    public ObservableCollection<ResourceGroupResource> ResourceGroups { get; private set; } = new(); 
 
+    public ObservableCollection<StorageAccountResource> StorageAccounts 
+        {
+        get => _storageAccounts;
+        set => SetProperty(ref _storageAccounts, value);
+    }
 
     public ResourceGroupResource? Selected
     {
@@ -21,6 +29,7 @@ public class ExplorerViewModel : ObservableRecipient, INavigationAware
         {
             SetProperty(ref _selected, value);
             _armService.SetDefaultResourceGroup(value);
+            StorageAccounts = new ObservableCollection<StorageAccountResource>(_armService.GetStorageAccountsAsync().Result);
         }
     }
 
@@ -29,8 +38,6 @@ public class ExplorerViewModel : ObservableRecipient, INavigationAware
         get => _activeSubscriptionText;
         set => SetProperty(ref _activeSubscriptionText, value);
     }
-
-    public ObservableCollection<ResourceGroupResource> ResourceGroups { get; private set; } = new ObservableCollection<ResourceGroupResource>();
 
     public ExplorerViewModel(IARMService armService)
     {
@@ -43,6 +50,9 @@ public class ExplorerViewModel : ObservableRecipient, INavigationAware
         ResourceGroups = new ObservableCollection<ResourceGroupResource>(
             (await _armService.GetResourceGroupsAsync())
             .OrderBy(i => i.Data.Name));
+
+        StorageAccounts = new ObservableCollection<StorageAccountResource>(
+            await _armService.GetStorageAccountsAsync());
 
         // TODO: Replace with real data.
         //var data = await _sampleDataService.GetListDetailsDataAsync();
@@ -75,4 +85,6 @@ public class ExplorerViewModel : ObservableRecipient, INavigationAware
             ActiveSubscriptionText = "Explorer_PleaseAuthenticate".GetLocalized();
         }
     }
+
+
 }

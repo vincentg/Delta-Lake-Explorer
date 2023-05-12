@@ -18,12 +18,4 @@ public sealed partial class ExplorerPage : Page
         ViewModel = App.GetService<ExplorerViewModel>();
         InitializeComponent();
     }
-
-    private void OnViewStateChanged(object sender, ListDetailsViewState e)
-    {
-        if (e == ListDetailsViewState.Both)
-        {
-            ViewModel.EnsureItemSelected();
-        }
-    }
 }

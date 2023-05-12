@@ -65,8 +65,8 @@ public class ARMService : IARMService
         {
             var accountCollection = _defaultResourceGroup.GetStorageAccounts();
             // Only Return HNS Enabled Storage Accounts
-            return Task.FromResult(accountCollection.Where(sa => (bool)sa.Data.IsHnsEnabled));
-            //return Task.FromResult((IEnumerable<StorageAccountResource>)accountCollection);
+            return Task.FromResult(accountCollection.Where(sa => sa.Data.IsHnsEnabled == true));
+        //    return Task.FromResult((IEnumerable<StorageAccountResource>)accountCollection);
         }
         else
         {
