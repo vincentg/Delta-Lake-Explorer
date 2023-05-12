@@ -13,10 +13,23 @@
 	<Nullable>enable</Nullable>
 	<UseWinUI>true</UseWinUI>
     <EnableMsixTooling>true</EnableMsixTooling>
+    <RepositoryUrl>https://github.com/vincentg/Delta-Lake-Explorer</RepositoryUrl>
+    <Copyright>Copyright (c) 2023 Vincent Gerard</Copyright>
+    <Description>A Delta Lake Explorer to discover and quickly view Delta tables metadata</Description>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <AssemblyVersion>0.1</AssemblyVersion>
+    <FileVersion>0.1</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
     <Manifest Include="$(ApplicationManifest)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
