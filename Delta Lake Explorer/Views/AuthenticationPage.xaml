@@ -4,10 +4,10 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-    xmlns:x1="using:Azure.ResourceManager.Resources"
+    xmlns:az="using:Azure.ResourceManager.Resources"
     mc:Ignorable="d">
     <Page.Resources>
-        <DataTemplate x:Key="SubscriptionListViewTemplate" x:DataType="x1:SubscriptionData">
+        <DataTemplate x:Key="SubscriptionListViewTemplate" x:DataType="az:SubscriptionData">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
@@ -40,7 +40,7 @@
     </Page.Resources>
     <StackPanel HorizontalAlignment="Left">
 
-        <Expander x:Name="Expander" >
+        <Expander x:Name="Expander" IsExpanded="True" >
             <Expander.Header>
                 <ToggleButton x:Name="loginButton" Command="{x:Bind ViewModel.LoginCommand}" Content ="{x:Bind ViewModel.ButtonText, Mode=OneWay}"/>
             </Expander.Header>

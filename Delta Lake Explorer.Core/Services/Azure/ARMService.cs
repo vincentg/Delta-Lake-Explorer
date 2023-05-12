@@ -16,6 +16,7 @@ public class ARMService : IARMService
     private readonly IAuthenticationService _authenticationService;
     private ArmClient _armClient;
     private SubscriptionResource _defaultSubscription;
+    private ResourceGroupResource _defaultResourceGroup;
 
     public ARMService(IAuthenticationService authenticationService)
     {
@@ -40,18 +41,39 @@ public class ARMService : IARMService
         {
             return Task.FromResult(_defaultSubscription);
         }
-        if (GetArmClientAsync() is not null)
+        if (GetArmClientAsync().Result is not null)
         {
              _defaultSubscription = _armClient.GetDefaultSubscription();
             return Task.FromResult(_defaultSubscription);
         }
-        return null;
+        return Task.FromResult<SubscriptionResource>(null);
     }
 
-    public Task<IEnumerable<string>> GetResourceGroupsAsync(string subscriptionId) => throw new NotImplementedException();
-    public Task<IEnumerable<ResourceGroupResource>> GetResourceGroupsAsync() => throw new NotImplementedException();
-    public Task<IEnumerable<string>> GetStorageAccountsAsync(string subscriptionId, string resourceGroup) => throw new NotImplementedException();
-    public Task<StorageAccountCollection> GetStorageAccountsAsync(ResourceGroupResource resourceGroup) => throw new NotImplementedException();
+    public Task<IEnumerable<ResourceGroupResource>> GetResourceGroupsAsync()
+    {
+        var subscription = GetDefaultSubscriptionAsync().Result;
+        if (subscription is not null)
+        {
+            return Task.FromResult<IEnumerable<ResourceGroupResource>>(subscription.GetResourceGroups());
+        }
+        return Task.FromResult(Enumerable.Empty<ResourceGroupResource>());
+    }
+    public Task<IEnumerable<StorageAccountResource>> GetStorageAccountsAsync()
+    {
+
+        if (_defaultResourceGroup is not null)
+        {
+            var accountCollection = _defaultResourceGroup.GetStorageAccounts();
+            // Only Return HNS Enabled Storage Accounts
+            return Task.FromResult(accountCollection.Where(sa => sa.Data.IsHnsEnabled == true));
+        //    return Task.FromResult((IEnumerable<StorageAccountResource>)accountCollection);
+        }
+        else
+        {
+            return Task.FromResult(Enumerable.Empty<StorageAccountResource>());
+        }
+
+    }
     public Task<IEnumerable<string>> GetStorageContainersAsync(string subscriptionId, string resourceGroup, string storageAccount) => throw new NotImplementedException();
     public Task<BlobContainerCollection> GetStorageContainersAsync(StorageAccountResource storageAccount) => throw new NotImplementedException();
     public Task<IEnumerable<string>> GetStorageFileContentAsync(string subscriptionId, string resourceGroup, string storageAccount, string storageContainer, string storageFile) => throw new NotImplementedException();
@@ -69,6 +91,8 @@ public class ARMService : IARMService
         }
         return Task.FromResult(Enumerable.Empty<SubscriptionResource>());
     }
+
+    public void SetDefaultResourceGroup(ResourceGroupResource resourceGroup) => (_defaultResourceGroup) = (resourceGroup);
 }
 
 

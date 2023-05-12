@@ -127,7 +127,7 @@
     <value>Authentication</value>
   </data>
   <data name="Explorer_NoSelection.Text" xml:space="preserve">
-    <value>Select an item from the list.</value>
+    <value>Please Select a Storage Account</value>
   </data>
   <data name="Shell_Explorer.Content" xml:space="preserve">
     <value>Explorer</value>
@@ -155,5 +155,11 @@
   </data>
   <data name="Authentication_Username" xml:space="preserve">
     <value>Username</value>
+  </data>
+  <data name="Explorer_ActiveSubscription" xml:space="preserve">
+    <value>Active Azure Subscription</value>
+  </data>
+  <data name="Explorer_PleaseAuthenticate" xml:space="preserve">
+    <value>No Active Azure Subscription, please authenticate</value>
   </data>
 </root>
