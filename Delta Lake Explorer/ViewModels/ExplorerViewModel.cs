@@ -12,12 +12,14 @@ public class ExplorerViewModel : ObservableRecipient, INavigationAware
 {
     private readonly IARMService _armService;
     private ResourceGroupResource? _selected;
+    private StorageAccountResource? _selectedStorage;
+
     private string? _activeSubscriptionText;
     private ObservableCollection<StorageAccountResource> _storageAccounts = new();
-    public ObservableCollection<ResourceGroupResource> ResourceGroups { get; private set; } = new(); 
+    public ObservableCollection<ResourceGroupResource> ResourceGroups { get; private set; } = new();
 
-    public ObservableCollection<StorageAccountResource> StorageAccounts 
-        {
+    public ObservableCollection<StorageAccountResource> StorageAccounts
+    {
         get => _storageAccounts;
         set => SetProperty(ref _storageAccounts, value);
     }
@@ -30,6 +32,17 @@ public class ExplorerViewModel : ObservableRecipient, INavigationAware
             SetProperty(ref _selected, value);
             _armService.SetDefaultResourceGroup(value);
             StorageAccounts = new ObservableCollection<StorageAccountResource>(_armService.GetStorageAccountsAsync().Result);
+        }
+    }
+
+    public StorageAccountResource? SelectedStorage
+    {
+
+        get => _selectedStorage;
+        set
+        {
+            SetProperty(ref _selectedStorage, value);
+            _armService.SetDefaultStorageAccount(value);
         }
     }
 

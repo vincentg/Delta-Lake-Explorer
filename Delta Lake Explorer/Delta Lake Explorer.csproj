@@ -52,6 +52,8 @@
     </None>
   </ItemGroup>
 
+	
+	
   <ItemGroup Condition="'$(DisableMsixProjectCapabilityAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
     <ProjectCapability Include="Msix" />
   </ItemGroup>

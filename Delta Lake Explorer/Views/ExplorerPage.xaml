@@ -99,6 +99,7 @@
             BorderBrush="Transparent"
             ItemsSource="{x:Bind ViewModel.StorageAccounts, Mode=OneWay}"
             ItemTemplate="{StaticResource StorageAccountTemplate}"
+            SelectedItem="{x:Bind ViewModel.SelectedStorage, Mode=TwoWay}"
             Height="700"
             />
             </Grid>
