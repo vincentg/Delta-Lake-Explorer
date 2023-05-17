@@ -51,10 +51,11 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <TextBlock Margin="8,13,8,8" Style="{ThemeResource BaseTextBlockStyle}">Filter:</TextBlock>
                         <TextBox Grid.Column="1" x:Name="FilterByFirstName" Width="300" Margin="8" HorizontalAlignment="Left" TextChanged="{x:Bind ViewModel.FilterChanged}"/>
-                        <Button  Grid.Column="1" Margin="310,13,12,8" Content="Reload" Width="180"/>
+                        <Button  Grid.Column="2" Margin="8,8,8,8" Content="Reload" Width="140"/>
                     </Grid>
 
                     <ListView
