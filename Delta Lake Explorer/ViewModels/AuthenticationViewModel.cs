@@ -8,6 +8,8 @@ using Delta_Lake_Explorer.Core.Contracts.Services.Azure;
 using Delta_Lake_Explorer.Core.Models.Azure;
 using Delta_Lake_Explorer.Core.Services.Azure;
 using Delta_Lake_Explorer.Helpers;
+using Delta_Lake_Explorer.Models;
+using Microsoft.IdentityModel.Abstractions;
 using Microsoft.UI.Xaml.Controls;
 
 namespace Delta_Lake_Explorer.ViewModels;
@@ -22,6 +24,7 @@ public class AuthenticationViewModel : ObservableRecipient
     private string? _labelText;
     private ObservableCollection<SubscriptionData> _subscriptionList;
     private ObservableCollection<SubscriptionData> _fullSubscriptionList;
+    private UserEnvironmentData _userEnvironmentData;
     // TODO, the Service can likely maintain that map between Id and SubscriptionResouce
     // and have the Set DefaultSubscription accept the ID?
     private Dictionary<string, SubscriptionResource> _subscriptionsDictionnary;
@@ -29,6 +32,7 @@ public class AuthenticationViewModel : ObservableRecipient
 
     public AuthenticationViewModel(IAuthenticationService authenticationService, IARMService armService)
     {
+        _userEnvironmentData = new UserEnvironmentData();
         _authenticationService = authenticationService;
         _armService = armService;
         _azureAuthentication = (AzureAuthentication)_authenticationService.GetAuthenticationAsync().Result;
@@ -95,6 +99,13 @@ public class AuthenticationViewModel : ObservableRecipient
            }
        });
 
+    public ICommand ReloadSubscriptionCommand => new RelayCommand(() =>
+    {
+        _userEnvironmentData.subscriptions = null;
+        refreshSubscriptions();
+    });
+
+
     public void SubscriptionSelected(object sender, SelectionChangedEventArgs args)
     {
         // TODO May need a try catch here
@@ -105,7 +116,16 @@ public class AuthenticationViewModel : ObservableRecipient
 
     private void refreshSubscriptions()
     {
-        var subscriptions = _armService.GetSubscriptionsAsync().Result;
+        IEnumerable<SubscriptionResource> subscriptions;
+        if ((_userEnvironmentData.subscriptions == null)||(_userEnvironmentData.subscriptions.Count() == 0))
+        {
+            subscriptions = _armService.GetSubscriptionsAsync().Result;
+            _userEnvironmentData.subscriptions = subscriptions;
+        }
+        else
+        {
+            subscriptions = _userEnvironmentData.subscriptions;
+        }
         SubscriptionList = new ObservableCollection<SubscriptionData>(subscriptions.Select(i => i.Data).OrderBy(i => i.DisplayName));
         _fullSubscriptionList = _subscriptionList;
         _subscriptionsDictionnary = subscriptions.ToDictionary(i => i.Data.SubscriptionId, i => i);
