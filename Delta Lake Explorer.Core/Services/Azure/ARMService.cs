@@ -16,6 +16,9 @@ public class ARMService : IARMService
     private readonly IAuthenticationService _authenticationService;
     private ArmClient _armClient;
     private SubscriptionResource _defaultSubscription;
+    private ResourceGroupResource _defaultResourceGroup;
+    private Task<IEnumerable<SubscriptionResource>> _subscriptionsList;
+
 
     public ARMService(IAuthenticationService authenticationService)
     {
@@ -65,7 +68,11 @@ public class ARMService : IARMService
     {
         if (GetArmClientAsync().Result is not null)
         {
-            return Task.FromResult<IEnumerable<SubscriptionResource>>(_armClient.GetSubscriptions());
+            if (_subscriptionsList == null)
+            {
+                _subscriptionsList = Task.FromResult<IEnumerable<SubscriptionResource>>(_armClient.GetSubscriptions());
+            }
+            return _subscriptionsList;
         }
         return Task.FromResult(Enumerable.Empty<SubscriptionResource>());
     }
