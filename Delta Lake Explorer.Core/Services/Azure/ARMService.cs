@@ -74,6 +74,10 @@ public class ARMService : IARMService
         }
 
     }
+    public void InvalidateSubscriptionsCache()
+    {
+        _subscriptionsList = null;
+    }
     public Task<IEnumerable<string>> GetStorageContainersAsync(string subscriptionId, string resourceGroup, string storageAccount) => throw new NotImplementedException();
     public Task<BlobContainerCollection> GetStorageContainersAsync(StorageAccountResource storageAccount) => throw new NotImplementedException();
     public Task<IEnumerable<string>> GetStorageFileContentAsync(string subscriptionId, string resourceGroup, string storageAccount, string storageContainer, string storageFile) => throw new NotImplementedException();

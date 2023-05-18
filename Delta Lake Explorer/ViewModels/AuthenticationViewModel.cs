@@ -37,7 +37,7 @@ public class AuthenticationViewModel : ObservableRecipient
         _isAuthenticated = _azureAuthentication.IsAuthenticated;
         _buttonText = (bool)_isAuthenticated ? "Authentication_LoggedIn".GetLocalized() : "Authentication_ClickToLogin".GetLocalized();
         _labelText = generateLabelText();
-        refreshSubscriptions();
+        reloadSubscriptions();
 
     }
     public bool? IsAuthenticated
@@ -93,13 +93,14 @@ public class AuthenticationViewModel : ObservableRecipient
                IsAuthenticated = _azureAuthentication.IsAuthenticated;
                ButtonText = "Authentication_LoggedIn".GetLocalized();
                LabelText = generateLabelText();
-               refreshSubscriptions();
+               reloadSubscriptions();
            }
        });
 
     public ICommand ReloadSubscriptionCommand => new RelayCommand(() =>
     {
-        refreshSubscriptions();
+        _armService.InvalidateSubscriptionsCache();
+        reloadSubscriptions();
     });
 
 
@@ -111,7 +112,7 @@ public class AuthenticationViewModel : ObservableRecipient
         _armService.SetDefaultSubscriptionAsync(_subscriptionsDictionnary[subscription.SubscriptionId]);
     }
 
-    private void refreshSubscriptions()
+    private void reloadSubscriptions()
     {
         IEnumerable<SubscriptionResource> subscriptions;
         subscriptions = _armService.GetSubscriptionsAsync().Result;
