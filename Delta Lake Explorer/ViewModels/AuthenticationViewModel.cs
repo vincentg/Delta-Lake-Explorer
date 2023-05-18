@@ -8,6 +8,8 @@ using Delta_Lake_Explorer.Core.Contracts.Services.Azure;
 using Delta_Lake_Explorer.Core.Models.Azure;
 using Delta_Lake_Explorer.Core.Services.Azure;
 using Delta_Lake_Explorer.Helpers;
+using Delta_Lake_Explorer.Models;
+using Microsoft.IdentityModel.Abstractions;
 using Microsoft.UI.Xaml.Controls;
 
 namespace Delta_Lake_Explorer.ViewModels;
@@ -35,7 +37,7 @@ public class AuthenticationViewModel : ObservableRecipient
         _isAuthenticated = _azureAuthentication.IsAuthenticated;
         _buttonText = (bool)_isAuthenticated ? "Authentication_LoggedIn".GetLocalized() : "Authentication_ClickToLogin".GetLocalized();
         _labelText = generateLabelText();
-        refreshSubscriptions();
+        reloadSubscriptions();
 
     }
     public bool? IsAuthenticated
@@ -91,9 +93,16 @@ public class AuthenticationViewModel : ObservableRecipient
                IsAuthenticated = _azureAuthentication.IsAuthenticated;
                ButtonText = "Authentication_LoggedIn".GetLocalized();
                LabelText = generateLabelText();
-               refreshSubscriptions();
+               reloadSubscriptions();
            }
        });
+
+    public ICommand ReloadSubscriptionCommand => new RelayCommand(() =>
+    {
+        _armService.InvalidateSubscriptionsCache();
+        reloadSubscriptions();
+    });
+
 
     public void SubscriptionSelected(object sender, SelectionChangedEventArgs args)
     {
@@ -103,9 +112,10 @@ public class AuthenticationViewModel : ObservableRecipient
         _armService.SetDefaultSubscriptionAsync(_subscriptionsDictionnary[subscription.SubscriptionId]);
     }
 
-    private void refreshSubscriptions()
+    private void reloadSubscriptions()
     {
-        var subscriptions = _armService.GetSubscriptionsAsync().Result;
+        IEnumerable<SubscriptionResource> subscriptions;
+        subscriptions = _armService.GetSubscriptionsAsync().Result;
         SubscriptionList = new ObservableCollection<SubscriptionData>(subscriptions.Select(i => i.Data).OrderBy(i => i.DisplayName));
         _fullSubscriptionList = _subscriptionList;
         _subscriptionsDictionnary = subscriptions.ToDictionary(i => i.Data.SubscriptionId, i => i);

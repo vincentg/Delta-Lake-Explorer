@@ -27,4 +27,5 @@ public interface IARMService
     Task<BlobContainerCollection> GetStorageContainersAsync(StorageAccountResource storageAccount);
     Task<IEnumerable<string>> GetStorageFilesAsync(string subscriptionId, string resourceGroup, string storageAccount, string storageContainer);
     Task<IEnumerable<string>> GetStorageFileContentAsync(string subscriptionId, string resourceGroup, string storageAccount, string storageContainer, string storageFile);
+    public void InvalidateSubscriptionsCache();
 }

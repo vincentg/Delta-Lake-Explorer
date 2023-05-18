@@ -17,7 +17,7 @@ public class ARMService : IARMService
     private ArmClient _armClient;
     private SubscriptionResource _defaultSubscription;
     private ResourceGroupResource _defaultResourceGroup;
-
+    private Task<IEnumerable<SubscriptionResource>> _subscriptionsList;
     public ARMService(IAuthenticationService authenticationService)
     {
         _authenticationService = authenticationService;
@@ -74,6 +74,10 @@ public class ARMService : IARMService
         }
 
     }
+    public void InvalidateSubscriptionsCache()
+    {
+        _subscriptionsList = null;
+    }
     public Task<IEnumerable<string>> GetStorageContainersAsync(string subscriptionId, string resourceGroup, string storageAccount) => throw new NotImplementedException();
     public Task<BlobContainerCollection> GetStorageContainersAsync(StorageAccountResource storageAccount) => throw new NotImplementedException();
     public Task<IEnumerable<string>> GetStorageFileContentAsync(string subscriptionId, string resourceGroup, string storageAccount, string storageContainer, string storageFile) => throw new NotImplementedException();
@@ -87,7 +91,11 @@ public class ARMService : IARMService
     {
         if (GetArmClientAsync().Result is not null)
         {
-            return Task.FromResult<IEnumerable<SubscriptionResource>>(_armClient.GetSubscriptions());
+            if (_subscriptionsList == null)
+            {
+                _subscriptionsList = Task.FromResult<IEnumerable<SubscriptionResource>>(_armClient.GetSubscriptions());
+            }
+            return _subscriptionsList;
         }
         return Task.FromResult(Enumerable.Empty<SubscriptionResource>());
     }

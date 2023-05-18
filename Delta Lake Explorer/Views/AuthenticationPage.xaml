@@ -47,14 +47,15 @@
             <Expander.Content>
                 <StackPanel HorizontalAlignment="Left">
                     <TextBlock Margin="15" Text="{x:Bind ViewModel.LabelText, Mode=OneWay}"/>
-                    <Grid>
+                    <Grid Width="Auto" Height="Auto">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <TextBlock Margin="8,13,8,8" Style="{ThemeResource BaseTextBlockStyle}">Filter:</TextBlock>
-                        <TextBox Grid.Column="1" x:Name="FilterByFirstName" Width="300" Margin="8"
-	     HorizontalAlignment="Left" TextChanged="{x:Bind ViewModel.FilterChanged}"/>
+                        <TextBox Grid.Column="1" x:Name="FilterByFirstName" Width="300" Margin="8" HorizontalAlignment="Left" TextChanged="{x:Bind ViewModel.FilterChanged}"/>
+                        <Button  Grid.Column="2" Margin="8,8,8,8" Content="Reload" Width="120" Command="{x:Bind ViewModel.ReloadSubscriptionCommand}"/>
                     </Grid>
 
                     <ListView
