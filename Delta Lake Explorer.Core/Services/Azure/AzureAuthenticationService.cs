@@ -20,25 +20,34 @@ public class AzureAuthenticationService : IAuthenticationService
             IsAuthenticated = false
         };
     }
-    public async Task<CloudAuthentication> AuthenticateAsync()
+    public async Task<CloudAuthentication> AuthenticateAsync(InteractiveBrowserCredential
+                                                            customCredential = null)
     {
         var opt = new InteractiveBrowserCredentialOptions();
         opt.DisableAutomaticAuthentication = true;
 
-        var credential = new InteractiveBrowserCredential(opt);
-        // TODO Manage Exception and Cancelled auth, maybe use a Dialog popup
-        var authrecord = await credential.AuthenticateAsync();
-
-        _azureAuthentication = new AzureAuthentication
+        var credential = customCredential ?? new InteractiveBrowserCredential(opt);
+        try
         {
-            IsAuthenticated = true,
-            UserName = authrecord.Username,
-            ClientId = authrecord.ClientId,
-            TenantId = authrecord.TenantId,
-            TokenCredential = credential
-        };
-        return _azureAuthentication;
-
+            var authrecord = await credential.AuthenticateAsync();
+            _azureAuthentication = new AzureAuthentication
+            {
+                IsAuthenticated = true,
+                UserName = authrecord.Username,
+                ClientId = authrecord.ClientId,
+                TenantId = authrecord.TenantId,
+                TokenCredential = credential
+            };
+            return _azureAuthentication;
+        }
+        catch (AuthenticationFailedException e)
+        {
+            return new AzureAuthentication
+            {
+                IsAuthenticated = false,
+                AuthenticationError = e.Message,
+            };
+        }
     }
     public Task<CloudAuthentication> GetAuthenticationAsync() => Task.FromResult<CloudAuthentication>(_azureAuthentication);
     public Task<bool> IsAuthenticatedAsync() => Task.FromResult(_azureAuthentication.IsAuthenticated);

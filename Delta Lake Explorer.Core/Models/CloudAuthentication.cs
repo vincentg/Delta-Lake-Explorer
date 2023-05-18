@@ -13,6 +13,10 @@ public record CloudAuthentication
         get; init;
     }
 
+    public string AuthenticationError
+    {
+        get; init;
+    } 
     public string UserName
     {
         get; init;

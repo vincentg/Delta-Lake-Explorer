@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using Azure.ResourceManager.Resources;
 using Azure.ResourceManager.Storage;
+using Azure.Storage.Files.DataLake.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Delta_Lake_Explorer.Contracts.ViewModels;
 using Delta_Lake_Explorer.Core.Contracts.Services.Azure;
@@ -11,10 +12,12 @@ namespace Delta_Lake_Explorer.ViewModels;
 public class ExplorerViewModel : ObservableRecipient, INavigationAware
 {
     private readonly IARMService _armService;
+    private readonly IDatalakeService _datalakeService;
+
     private ResourceGroupResource? _selected;
     private StorageAccountResource? _selectedStorage;
-
     private string? _activeSubscriptionText;
+    
     private ObservableCollection<StorageAccountResource> _storageAccounts = new();
     public ObservableCollection<ResourceGroupResource> ResourceGroups { get; private set; } = new();
 
@@ -43,6 +46,18 @@ public class ExplorerViewModel : ObservableRecipient, INavigationAware
         {
             SetProperty(ref _selectedStorage, value);
             _armService.SetDefaultStorageAccount(value);
+            // TEST CODE
+            IEnumerable<FileSystemItem> a = _datalakeService.GetFileSystems().ToBlockingEnumerable();
+            //var c = a.Where(x => x.Name == "curateddata").First();
+            List<PathItem> b = _datalakeService.GetDeltaPaths(a.First()).ToList();
+            var d = new List<PathItem>();
+            foreach (var x in a)
+                Console.WriteLine(x);
+            foreach (var x in b)
+                d.Append(x);
+
+            Console.WriteLine();    
+
         }
     }
 
@@ -52,9 +67,10 @@ public class ExplorerViewModel : ObservableRecipient, INavigationAware
         set => SetProperty(ref _activeSubscriptionText, value);
     }
 
-    public ExplorerViewModel(IARMService armService)
+    public ExplorerViewModel(IARMService armService, IDatalakeService datalakeService)
     {
         _armService = armService;
+        _datalakeService = datalakeService;
     }
 
     public async void OnNavigatedTo(object parameter)

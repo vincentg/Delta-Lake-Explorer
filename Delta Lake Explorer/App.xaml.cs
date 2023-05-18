@@ -69,6 +69,7 @@ public partial class App : Application
             services.AddSingleton<IFileService, FileService>();
             services.AddSingleton<IAuthenticationService, AzureAuthenticationService>();
             services.AddSingleton<IARMService, ARMService>();
+            services.AddSingleton<IDatalakeService, DatalakeService>();
 
 
             // Views and ViewModels

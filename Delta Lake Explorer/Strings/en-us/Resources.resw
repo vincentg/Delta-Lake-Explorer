@@ -162,4 +162,7 @@
   <data name="Explorer_PleaseAuthenticate" xml:space="preserve">
     <value>No Active Azure Subscription, please authenticate</value>
   </data>
+  <data name="Authentication_Error" xml:space="preserve">
+    <value>Authentication Error</value>
+  </data>
 </root>
