@@ -105,6 +105,7 @@ public class AuthenticationViewModel : ObservableRecipient
 
     public void SubscriptionSelected(object sender, SelectionChangedEventArgs args)
     {
+        // TODO May need a try catch here
         var subscription = (SubscriptionData)args.AddedItems[0];
 
         _armService.SetDefaultSubscriptionAsync(_subscriptionsDictionnary[subscription.SubscriptionId]);

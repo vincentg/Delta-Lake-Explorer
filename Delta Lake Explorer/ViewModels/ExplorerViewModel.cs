@@ -1,42 +1,66 @@
 ﻿using System.Collections.ObjectModel;
-
+using Azure.ResourceManager.Resources;
+using Azure.ResourceManager.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
-
 using Delta_Lake_Explorer.Contracts.ViewModels;
-using Delta_Lake_Explorer.Core.Contracts.Services;
-using Delta_Lake_Explorer.Core.Models;
+using Delta_Lake_Explorer.Core.Contracts.Services.Azure;
+using Delta_Lake_Explorer.Helpers;
 
 namespace Delta_Lake_Explorer.ViewModels;
 
 public class ExplorerViewModel : ObservableRecipient, INavigationAware
 {
-    private readonly ISampleDataService _sampleDataService;
-    private SampleOrder? _selected;
+    private readonly IARMService _armService;
+    private ResourceGroupResource? _selected;
+    private string? _activeSubscriptionText;
+    private ObservableCollection<StorageAccountResource> _storageAccounts = new();
+    public ObservableCollection<ResourceGroupResource> ResourceGroups { get; private set; } = new(); 
 
-    public SampleOrder? Selected
-    {
-        get => _selected;
-        set => SetProperty(ref _selected, value);
+    public ObservableCollection<StorageAccountResource> StorageAccounts 
+        {
+        get => _storageAccounts;
+        set => SetProperty(ref _storageAccounts, value);
     }
 
-    public ObservableCollection<SampleOrder> SampleItems { get; private set; } = new ObservableCollection<SampleOrder>();
-
-    public ExplorerViewModel(ISampleDataService sampleDataService)
+    public ResourceGroupResource? Selected
     {
-        _sampleDataService = sampleDataService;
+        get => _selected;
+        set
+        {
+            SetProperty(ref _selected, value);
+            _armService.SetDefaultResourceGroup(value);
+            StorageAccounts = new ObservableCollection<StorageAccountResource>(_armService.GetStorageAccountsAsync().Result);
+        }
+    }
+
+    public string ActiveSubscriptionText
+    {
+        get => _activeSubscriptionText;
+        set => SetProperty(ref _activeSubscriptionText, value);
+    }
+
+    public ExplorerViewModel(IARMService armService)
+    {
+        _armService = armService;
     }
 
     public async void OnNavigatedTo(object parameter)
     {
-        SampleItems.Clear();
+        setSubscriptionText();
+        ResourceGroups = new ObservableCollection<ResourceGroupResource>(
+            (await _armService.GetResourceGroupsAsync())
+            .OrderBy(i => i.Data.Name));
+
+        StorageAccounts = new ObservableCollection<StorageAccountResource>(
+            await _armService.GetStorageAccountsAsync());
 
         // TODO: Replace with real data.
-        var data = await _sampleDataService.GetListDetailsDataAsync();
+        //var data = await _sampleDataService.GetListDetailsDataAsync();
 
-        foreach (var item in data)
-        {
-            SampleItems.Add(item);
-        }
+        ///foreach (var item in data)
+        //{
+        //    SampleItems.Add(item);
+        // }
     }
 
     public void OnNavigatedFrom()
@@ -45,6 +69,22 @@ public class ExplorerViewModel : ObservableRecipient, INavigationAware
 
     public void EnsureItemSelected()
     {
-        Selected ??= SampleItems.First();
+        //Selected ??= SampleItems.First();
     }
+
+    private async void setSubscriptionText()
+    {
+        var defaultSubscription = await _armService.GetDefaultSubscriptionAsync();
+        if (defaultSubscription != null)
+        {
+            ActiveSubscriptionText = "Explorer_ActiveSubscription".GetLocalized() + $": {defaultSubscription.Data.DisplayName} ({defaultSubscription.Data.SubscriptionId})";
+        }
+
+        else
+        {
+            ActiveSubscriptionText = "Explorer_PleaseAuthenticate".GetLocalized();
+        }
+    }
+
+
 }
