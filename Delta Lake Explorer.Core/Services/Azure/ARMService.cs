@@ -18,9 +18,17 @@ public class ARMService : IARMService
     private SubscriptionResource _defaultSubscription;
     private ResourceGroupResource _defaultResourceGroup;
     private Task<IEnumerable<SubscriptionResource>> _subscriptionsList;
+    private StorageAccountResource _defaultStorageAccount;
+
     public ARMService(IAuthenticationService authenticationService)
     {
         _authenticationService = authenticationService;
+    }
+
+    internal ARMService(IAuthenticationService authenticationService, ArmClient mock)
+    {
+        _authenticationService = authenticationService;
+        _armClient = mock;
     }
 
     private async Task<ArmClient> GetArmClientAsync()
@@ -66,7 +74,6 @@ public class ARMService : IARMService
             var accountCollection = _defaultResourceGroup.GetStorageAccounts();
             // Only Return HNS Enabled Storage Accounts
             return Task.FromResult(accountCollection.Where(sa => sa.Data.IsHnsEnabled == true));
-        //    return Task.FromResult((IEnumerable<StorageAccountResource>)accountCollection);
         }
         else
         {
@@ -78,10 +85,6 @@ public class ARMService : IARMService
     {
         _subscriptionsList = null;
     }
-    public Task<IEnumerable<string>> GetStorageContainersAsync(string subscriptionId, string resourceGroup, string storageAccount) => throw new NotImplementedException();
-    public Task<BlobContainerCollection> GetStorageContainersAsync(StorageAccountResource storageAccount) => throw new NotImplementedException();
-    public Task<IEnumerable<string>> GetStorageFileContentAsync(string subscriptionId, string resourceGroup, string storageAccount, string storageContainer, string storageFile) => throw new NotImplementedException();
-    public Task<IEnumerable<string>> GetStorageFilesAsync(string subscriptionId, string resourceGroup, string storageAccount, string storageContainer) => throw new NotImplementedException();
     public Task SetDefaultSubscriptionAsync(SubscriptionResource subscription)
     {
         _defaultSubscription = subscription;
@@ -101,6 +104,10 @@ public class ARMService : IARMService
     }
 
     public void SetDefaultResourceGroup(ResourceGroupResource resourceGroup) => (_defaultResourceGroup) = (resourceGroup);
+    public void SetDefaultStorageAccount(StorageAccountResource storageAccount) => 
+        (_defaultStorageAccount) = (storageAccount);
+
+    public StorageAccountResource GetDefaultStorageAccount() => _defaultStorageAccount;
 }
 
 
