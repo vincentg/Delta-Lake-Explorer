@@ -46,17 +46,13 @@ public class ExplorerViewModel : ObservableRecipient, INavigationAware
         {
             SetProperty(ref _selectedStorage, value);
             _armService.SetDefaultStorageAccount(value);
-            // TEST CODE
+            /* TEST CODE
             IEnumerable<FileSystemItem> a = _datalakeService.GetFileSystems().ToBlockingEnumerable();
             //var c = a.Where(x => x.Name == "curateddata").First();
             List<PathItem> b = _datalakeService.GetDeltaPaths(a.First()).ToList();
-            var d = new List<PathItem>();
-            foreach (var x in a)
-                Console.WriteLine(x);
-            foreach (var x in b)
-                d.Append(x);
 
-            Console.WriteLine();    
+            Console.WriteLine();
+            */
 
         }
     }

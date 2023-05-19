@@ -59,7 +59,7 @@ public class DatalakeService : IDatalakeService
         return null;
     }
 
-    // TODO MOVE TO Async asap
+    // TODO MOVE TO Async asap, also was put recursive false,  need to study how to scan efficiently DL.
     public Pageable<PathItem> GetDeltaPaths(FileSystemItem filesystem)
     {
         if (GetDataLakeServiceClientAsync().Result is not null)
